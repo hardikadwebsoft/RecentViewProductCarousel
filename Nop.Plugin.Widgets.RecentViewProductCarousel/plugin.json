@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Widgets",
+  "FriendlyName": "Recent View Product Carousel",
+  "SystemName": "Widgets.RecentViewProductCarousel",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.40" ],
+  "Author": "Adwebsoft team",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Widgets.RecentViewProductCarousel.dll",
+  "Description": "This plugin allows you to show recent viewed products carousel on home page"
+}

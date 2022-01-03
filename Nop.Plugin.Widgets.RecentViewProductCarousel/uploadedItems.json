@@ -1,0 +1,9 @@
+[
+  {
+    "Type": "Plugin",
+    "SupportedVersion": "4.40",
+    "DirectoryPath": "RecentViewProductCarousel/nopCommerce 4.40/Widgets.RecentViewProductCarousel/",
+    "SystemName": "Widgets.RecentViewProductCarousel",
+    "SourceDirectoryPath": "RecentViewProductCarousel/nopCommerce 4.40/Nop.Plugin.Widgets.RecentViewProductCarousel/"
+  }
+]

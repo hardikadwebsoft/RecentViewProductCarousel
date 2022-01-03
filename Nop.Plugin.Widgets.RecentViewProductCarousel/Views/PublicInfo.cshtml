@@ -1,0 +1,111 @@
+﻿@model IList<Nop.Web.Models.Catalog.ProductOverviewModel>
+@using Nop.Core
+@using Nop.Core.Domain.Catalog
+@using Nop.Core.Domain.Orders
+@using Nop.Core.Domain.Tax
+@inject CatalogSettings catalogSettings
+@inject IWorkContext workContext
+@{
+    Layout = "";
+
+    Html.AddCssFileParts("~/Plugins/Widgets.RecentViewProductCarousel/Content/bootstrap.min.css");
+    Html.AddCssFileParts("~/Plugins/Widgets.RecentViewProductCarousel/Content/font-awesome.min.css");
+    Html.AddCssFileParts("~/Plugins/Widgets.RecentViewProductCarousel/Content/style.css");
+
+    Html.AddScriptParts(ResourceLocation.Head, "~/Plugins/Widgets.RecentViewProductCarousel/Scripts/bootstrap.min.js");
+    Html.AddScriptParts(ResourceLocation.Head, "~/Plugins/Widgets.RecentViewProductCarousel/Scripts/jquery.min.js");
+    Html.AddScriptParts(ResourceLocation.Head, "~/Plugins/Widgets.RecentViewProductCarousel/Scripts/slick.js");
+
+}
+
+<div class="container m-0">
+    <div class="title">Recently Viewed Products</div>
+    <section class="customer-logos slider">
+        @foreach (var product in Model)
+        {
+            var addtocartlink = "";
+            var shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart;
+            var quantity = 1;
+            if (product.ProductPrice.ForceRedirectionAfterAddingToCart)
+            {
+                addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = product.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity, forceredirection = product.ProductPrice.ForceRedirectionAfterAddingToCart });
+            }
+            else
+            {
+                addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = product.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity });
+            }
+
+            var addtowishlistlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = product.Id, shoppingCartTypeId = (int)ShoppingCartType.Wishlist, quantity = quantity });
+            var addtocomparelink = Url.RouteUrl("AddProductToCompare", new { productId = product.Id });
+        <div class="thumb-wrapper">
+            <div class="slide img-box">
+                <a href="@Url.RouteUrl("Product", new { SeName = product.SeName })" title="@product.DefaultPictureModel.Title">
+                    <img src="@product.DefaultPictureModel.ImageUrl" class="img-responsive img-fluid">
+                </a>
+            </div>
+            <div class="thumb-content">
+                <a class="item-title" href="@Url.RouteUrl("Product", new {SeName = product.SeName})">@product.Name</a>
+
+                @if (product.ReviewOverviewModel.AllowCustomerReviews)
+                {
+                    var ratingPercent = 0;
+                    if (product.ReviewOverviewModel.TotalReviews != 0)
+                    {
+                        ratingPercent = ((product.ReviewOverviewModel.RatingSum * 100) / product.ReviewOverviewModel.TotalReviews) / 5;
+                    }
+                    <div class="product-rating-box" title="@string.Format(T("Reviews.TotalReviews").Text, product.ReviewOverviewModel.TotalReviews)">
+                        <div class="rating">
+                            <div style="width: @(ratingPercent)%">
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <p class="item-price"><strike>@product.ProductPrice.OldPrice</strike> <span>@product.ProductPrice.Price</span></p>
+
+                @if (!product.ProductPrice.DisableBuyButton)
+                {
+                    var addToCartText = T("ShoppingCart.AddToCart").Text;
+                    if (product.ProductPrice.IsRental)
+                    {
+                        addToCartText = T("ShoppingCart.Rent").Text;
+                    }
+                    if (product.ProductPrice.AvailableForPreOrder)
+                    {
+                        addToCartText = T("ShoppingCart.PreOrder").Text;
+                    }
+                    <button type="button" class="btn btn-primary" style="background-color:#4ab2f1;border-color:#4ab2f1" onclick="AjaxCart.addproducttocart_catalog('@addtocartlink');return false;">@(addToCartText)</button>
+                }
+            </div>
+            </div>
+            }
+</section>
+ 
+</div>
+
+<script>
+    var $jq = jQuery.noConflict();
+    $jq(document).ready(function () {
+        $jq('.customer-logos').slick({
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 1500,
+            arrows: false,
+            dots: false,
+            pauseOnHover: false,
+            responsive: [{
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 4
+                }
+            }, {
+                breakpoint: 520,
+                settings: {
+                    slidesToShow: 3
+                }
+            }]
+        });
+    });
+</script>
+
